@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: sibelcom_app
+        restart: unless-stopped
+        volumes:
+            - .:/var/www
+        networks:
+            - sibelcom_network
+
+    nginx:
+        image: nginx:alpine
+        container_name: nginx_server
+        restart: unless-stopped
+        ports:
+            - "80:80"
+        volumes:
+            - .:/var/www
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+        depends_on:
+            - app
+        networks:
+            - sibelcom_network
+
+networks:
+    sibelcom_network:
+        driver: bridge
